@@ -9,21 +9,23 @@ description: "Local, daemon-free session memory shared with Claude Code. Use at 
 
 ## 작업 시작 때
 
+세션 시작 훅이 이 프로젝트의 최근 대화형 세션 5개(요청·마지막 결론)를 넣는다. 그 요약이 대화에 없으면(훅 미승인·실패) 한 번 직접 부른다:
+
 ```
 timecapsule recent --project "$PWD" --limit 5
 ```
 
-이 프로젝트에서 최근에 무슨 일이 있었는지 5개 세션의 요청·마지막 결론이 나온다. 지금 작업과 무관하면 무시한다.
+지금 작업과 무관하면 무시한다. `codex exec`·검토·가디언 세션은 기본으로 빠진다(`--include-auto` 로 포함).
 
 ## 과거를 찾을 때
 
 ```
-timecapsule search "질의어" [--project "$PWD"] [--agent claude|codex|claude-mem] [--days 30] [--limit 20]
+timecapsule search "질의어" [--project "$PWD"] [--agent claude|codex|cowork|claude-mem] [--days 30] [--limit 20] [--sort rank]
 timecapsule session <id 앞 8자리>        # 그 세션의 전개
 timecapsule tools --days 7 --commands   # 최근 어떤 도구·명령을 썼나 (주 에이전트만)
 ```
 
-한국어는 3글자 이상 부분 일치, 여러 단어는 AND. 결과의 세션 앞자리로 `session` 을 열면 전후 맥락이 보인다.
+3글자 이상은 부분 일치 색인, 「배포」「훅」 같은 짧은 말도 찾는다. 여러 단어는 AND. 결과의 세션 앞자리로 `session` 을 열면 전후 맥락이 보인다.
 
 ## 색인이 낡았으면
 
@@ -32,7 +34,7 @@ timecapsule index --quick     # 4초 예산, 최신 파일부터
 timecapsule index             # 전량 증분
 ```
 
-Claude Code 쪽 훅이 매 세션 색인을 돌리므로 보통은 손댈 일이 없다. Codex 만 쓰는 날이 길면 위 명령을 한 번 돌린다.
+Codex·Claude Code 훅이 세션 시작과 매 턴 끝에 색인을 돌리므로 보통은 손댈 일이 없다.
 
 ## 규칙
 
@@ -42,6 +44,7 @@ Claude Code 쪽 훅이 매 세션 색인을 돌리므로 보통은 손댈 일이
 
 ## 위치
 
-- DB `~/.timecapsule/index.db` · 설정 `~/.timecapsule/config.json`
+- DB `~/.timecapsule/index.db` · 설정 `~/.timecapsule/config.json` · 백업 `~/.timecapsule/backups/`
+- 훅 `~/.codex/hooks.json` → 이 폴더의 `hooks/session-start.sh` · `hooks/stop.sh`
 - 엔진 `~/.local/bin/timecapsule` (claude-timecapsule 과 같은 파일)
 - 규격은 `references/format.md`
