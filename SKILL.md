@@ -23,6 +23,8 @@ timecapsule recent --project "$PWD" --limit 5
 timecapsule search "질의어" [--project "$PWD"] [--agent claude|codex|cowork|claude-mem] [--days 30] [--limit 20] [--sort rank]
 timecapsule session <id 앞 8자리>        # 그 세션의 전개
 timecapsule tools --days 7 --commands   # 최근 어떤 도구·명령을 썼나 (주 에이전트만)
+timecapsule touched <경로> [--days N]   # 이 파일·폴더를 다룬 세션 — 요청·결론·도구 줄
+timecapsule lessons [--days 30] [--all]  # 교정 발화 후보(검토용) — 규칙 파일에는 고른 것만 옮긴다
 ```
 
 3글자 이상은 부분 일치 색인, 「배포」「훅」 같은 짧은 말도 찾는다. 여러 단어는 AND. 결과의 세션 앞자리로 `session` 을 열면 전후 맥락이 보인다.
