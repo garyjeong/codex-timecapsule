@@ -1,6 +1,6 @@
 ---
 name: timecapsule
-description: "Local, daemon-free session memory shared with Claude Code. Use at the start of any task to see what recent sessions in this project did (`timecapsule recent`), and whenever a past decision, command, error, or discussion needs recalling (\"지난번에\", \"전에 봤던\", \"어느 세션에서\", \"did we already\"): `timecapsule search`. Indexes ~/.codex/sessions and ~/.claude/projects into SQLite FTS5 (trigram, Korean-safe). Past sessions are never current policy — the project's document vault and code are the source of truth."
+description: "Local, daemon-free session memory shared with Claude Code. Use at the start of any task to see what recent sessions in this project did (`timecapsule recent`), and whenever a past decision, command, error, or discussion needs recalling (\"지난번에\", \"전에 봤던\", \"어느 세션에서\", \"did we already\"): `timecapsule search`. Indexes ~/.codex/sessions (incl. archived) and ~/.claude/projects into SQLite FTS5 (trigram, Korean-safe). Past sessions are never current policy — the project's document vault and code are the source of truth."
 ---
 
 # timecapsule (Codex)
@@ -9,7 +9,7 @@ description: "Local, daemon-free session memory shared with Claude Code. Use at 
 
 ## 작업 시작 때
 
-세션 시작 훅이 이 프로젝트의 최근 대화형 세션 5개(요청·마지막 결론)를 넣는다. 그 요약이 대화에 없으면(훅 미승인·실패) 한 번 직접 부른다:
+세션 시작 훅이 이 프로젝트의 최근 대화형 세션 5개(요청·마지막 결론)를 넣는다(새 세션·`/clear` 때만). 프롬프트마다 그 프롬프트와 닿는 과거 세션 3개도 붙는다. 그 요약이 대화에 없으면(훅 미승인·실패) 한 번 직접 부른다:
 
 ```
 timecapsule recent --project "$PWD" --limit 5
@@ -47,6 +47,6 @@ Codex·Claude Code 훅이 세션 시작과 매 턴 끝에 색인을 돌리므로
 ## 위치
 
 - DB `~/.timecapsule/index.db` · 설정 `~/.timecapsule/config.json` · 백업 `~/.timecapsule/backups/`
-- 훅 `~/.codex/hooks.json` → 이 폴더의 `hooks/session-start.sh` · `hooks/stop.sh`
+- 훅 `~/.codex/hooks.json` → 이 폴더의 `hooks/session-start.sh` · `hooks/prompt.sh` · `hooks/stop.sh`
 - 엔진 `~/.local/bin/timecapsule` (claude-timecapsule 과 같은 파일)
 - 규격은 `references/format.md`
